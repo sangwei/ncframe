@@ -1,0 +1,3 @@
+// the configured options and settings for ncframe
+#define NCF_VERSION_MAJOR @ncf_VERSION_MAJOR@
+#define NCF_VERSION_MINOR @ncf_VERSION_MINOR@
