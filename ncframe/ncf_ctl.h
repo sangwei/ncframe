@@ -5,9 +5,13 @@
 
 class ncf_ctl {
 public:
+    ncf_ctl() {};
+    virtual ~ncf_ctl() {};
+
+    virtual int show();
 
 protected:
     ncf_win* win_;
-}
+};
 
 #endif

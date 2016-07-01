@@ -17,12 +17,16 @@ configure_file (
 
 # all header files
 set(headers 
+    ncframe.h
     ncf_win.h
+    ncf_mdl.h
     ncf_ctl.h
     )
 # all src files
 set(sources
+    ncframe.cpp
     ncf_win.cpp
+    ncf_mdl.cpp
     ncf_ctl.cpp
     )
 
@@ -55,3 +59,6 @@ target_link_libraries (ncframe ${CURSES_LIBRARIES})
 install (TARGETS ncframe DESTINATION bin)
 install (FILES "${PROJECT_BINARY_DIR}/ncfConfig.h"        
          DESTINATION include)
+
+# build hello
+add_subdirectory (hello)
