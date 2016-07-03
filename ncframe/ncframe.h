@@ -25,16 +25,7 @@ public:
             if (c == 'q') {
                 break;
             }
-            switch (c) {
-            case 'k':
-            case KEY_UP:
-                cmgr.current()->key_up();
-                break;
-            case 'j':
-            case KEY_DOWN:
-                cmgr.current()->key_down();
-                break;
-            }
+            cmgr.current()->on_key(c);
         }
 
         return 0;

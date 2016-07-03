@@ -36,6 +36,19 @@ public:
         }
         return 0;
     };
+    virtual int on_key(int key) {
+        switch (key) {
+        case 'k':
+        case KEY_UP:
+            key_up();
+            break;
+        case 'j':
+        case KEY_DOWN:
+            key_down();
+            break;
+        }
+        return 0;
+    };
     int key_up() {
         WINDOW* win = pwin_->get_win();
         int maxy, maxx;
