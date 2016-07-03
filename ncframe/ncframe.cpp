@@ -1,12 +1,18 @@
 #include "ncframe.h"
 
-int ncf_init(ncf_ctl* pctl) {
-    // init ncurses
-    // ...
+int ncframe::init_nc() {
+    // start curses mode
+    initscr();
+    cbreak();
+    // no keyboard echo
+    noecho();
+    // get keyboard input
+    keypad(stdscr, TRUE);
+    refresh();
+    return 0;
+}
 
-    // show window
-    pctl->show();
-    
-    // start main loop
+int ncframe::end_nc() {
+    endwin();
     return 0;
 }

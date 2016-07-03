@@ -1,24 +1,38 @@
 cmake_minimum_required (VERSION 2.8)
 
-project (hello)
+project (ncframe)
 
 set (CMAKE_CXX_STANDARD 11)
 
+# The version number.
+set (ncf_VERSION_MAJOR 1)
+set (ncf_VERSION_MINOR 0)
+
+# configure a header file to pass some of the CMake settings
+# to the source code
+configure_file (
+  "${PROJECT_SOURCE_DIR}/ncfConfig.h.in"
+  "${PROJECT_BINARY_DIR}/ncfConfig.h"
+  )
+
 # all header files
-set (headers 
+set(headers 
+    ncframe.h
+    ncf_win.h
+    ncf_ctl.h
     )
-
 # all src files
-set (sources
-    hello.cpp
+set(sources
+    ncframe.cpp
+    ncf_ctl.cpp
     )
 
-# add the executable
-add_executable (hello ${sources} ${headers})
+# add the binary tree to the search path for include files
+# so that we will find ncfConfig.h
+include_directories ("${PROJECT_BINARY_DIR}")
 
-# libncframe
-include_directories ("/Users/sangwei/Codes/lab/ncframe/ncframe")
-target_link_libraries (hello "/Users/sangwei/Codes/lab/ncframe/build/ncframe/libncframe.a")
+# add the library
+add_library(ncframe ${sources} ${headers})
 
 # ncurses
 #find_package (Curses REQUIRED)
@@ -35,5 +49,10 @@ if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
     set (CURSES_LIBRARIES "/usr/lib/x86_64-linux-gnu/libncursesw.so")
 endif ()
 include_directories (${CURSES_INCLUDE_DIR})
-target_link_libraries (hello ${CURSES_LIBRARIES})
+target_link_libraries (ncframe ${CURSES_LIBRARIES})
 # ncurses end
+
+# add the install targets
+install (TARGETS ncframe DESTINATION bin)
+install (FILES "${PROJECT_BINARY_DIR}/ncfConfig.h"        
+         DESTINATION include)

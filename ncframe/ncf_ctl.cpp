@@ -1,4 +1,3 @@
 #include "ncf_ctl.h"
 
-int ncf_ctl::show() {
-}
+ncf_ctl_mgr* ncf_ctl_mgr::inst_ = nullptr;
