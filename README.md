@@ -1,2 +1,2 @@
 # ncframe
-A C++ framework using NCurses
+A C++ framework using lib ncurses
