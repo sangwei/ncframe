@@ -15,10 +15,12 @@ public:
         end_nc();
     };
     int start(ncf_ctl* pctl) {
+        // controller manager
+        ncf_ctl_mgr cmgr;
         // init controller
         pctl->init();
         // set current controller
-        ncf_ctl_mgr::inst()->set_current(pctl);
+        cmgr.set_current(pctl);
         while (int c = getch()) {
             if (c == 'q') {
                 break;
@@ -26,11 +28,11 @@ public:
             switch (c) {
             case 'k':
             case KEY_UP:
-                ncf_ctl_mgr::inst()->current()->key_up();
+                cmgr.current()->key_up();
                 break;
             case 'j':
             case KEY_DOWN:
-                ncf_ctl_mgr::inst()->current()->key_down();
+                cmgr.current()->key_down();
                 break;
             }
         }
@@ -39,8 +41,21 @@ public:
     };
 
 protected:
-    virtual int init_nc();
-    virtual int end_nc();
+    virtual int init_nc() {
+        // start curses mode
+        initscr();
+        cbreak();
+        // no keyboard echo
+        noecho();
+        // get keyboard input
+        keypad(stdscr, TRUE);
+        refresh();
+        return 0;
+    };
+    virtual int end_nc() {
+        endwin();
+        return 0;
+    };
 };
 
 #endif

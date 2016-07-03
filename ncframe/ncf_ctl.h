@@ -12,18 +12,8 @@ class ncf_ctl;
 
 class ncf_ctl_mgr : public std::map<std::string, ncf_ctl*> {
 public:
-    static ncf_ctl_mgr* inst() {
-        if (inst_ == nullptr) {
-            inst_ = new ncf_ctl_mgr();
-        }
-        return inst_;
-    };
-    static void clear() {
-        if (inst_ != nullptr) {
-            delete inst_;
-        }
-        inst_ = nullptr;
-    };
+    ncf_ctl_mgr() : cur_ctl_(nullptr) {};
+    ~ncf_ctl_mgr() {};
     void set_current(ncf_ctl* ctl) {
         cur_ctl_ = ctl;
     };
@@ -31,8 +21,6 @@ public:
         return cur_ctl_;
     };
 private:
-    static ncf_ctl_mgr* inst_;
-    ncf_ctl_mgr() : cur_ctl_(nullptr) {};
     ncf_ctl* cur_ctl_;
 };
 
@@ -81,7 +69,6 @@ public:
 
 protected:
     ncf_win<>* pwin_;
-
 };
 
 #endif

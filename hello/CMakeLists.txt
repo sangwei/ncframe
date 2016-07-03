@@ -5,7 +5,7 @@ project (hello)
 set (CMAKE_CXX_STANDARD 11)
 
 # all header files
-set (headers 
+set (headers
     )
 
 # all src files
@@ -18,7 +18,6 @@ add_executable (hello ${sources} ${headers})
 
 # libncframe
 include_directories ("/Users/sangwei/Codes/lab/ncframe/ncframe")
-target_link_libraries (hello "/Users/sangwei/Codes/lab/ncframe/build/ncframe/libncframe.a")
 
 # ncurses
 #find_package (Curses REQUIRED)
