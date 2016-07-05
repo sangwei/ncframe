@@ -14,7 +14,7 @@ public:
         // end ncurses
         end_nc();
     };
-    int start(ncf_ctl* pctl) {
+    int start(ncf_ctl_base* pctl) {
         // controller manager
         ncf_ctl_mgr cmgr;
         // init controller

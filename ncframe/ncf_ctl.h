@@ -2,38 +2,43 @@
 #define _NCF_CTL_H_
 
 #include "ncf_win.h"
-#include <utility>
 #include <map>
-#include <string>
-#include <ncurses.h>
-#include <iostream>
 
-class ncf_ctl;
+class ncf_ctl_base;
 
-class ncf_ctl_mgr : public std::map<std::string, ncf_ctl*> {
+class ncf_ctl_mgr : public std::map<std::string, ncf_ctl_base*> {
 public:
     ncf_ctl_mgr() : cur_ctl_(nullptr) {};
     ~ncf_ctl_mgr() {};
-    void set_current(ncf_ctl* ctl) {
+    void set_current(ncf_ctl_base* ctl) {
         cur_ctl_ = ctl;
     };
-    ncf_ctl* current() {
+    ncf_ctl_base* current() {
         return cur_ctl_;
     };
 private:
-    ncf_ctl* cur_ctl_;
+    ncf_ctl_base* cur_ctl_;
 };
 
-class ncf_ctl {
+class ncf_ctl_base {
 public:
-    ncf_ctl() : pwin_(nullptr) {};
-    ncf_ctl(ncf_win<>* pwin) : pwin_(pwin) {};
+    ncf_ctl_base() {};
+    virtual ~ncf_ctl_base() {};
+    virtual int init() = 0;
+    virtual int on_key(int key) = 0;
+    virtual int key_up() = 0;
+    virtual int key_down() = 0;
+};
+
+template <typename ncfw_t>
+class ncf_ctl : public ncf_ctl_base {
+public:
+    ncf_ctl() : win_(nullptr) {};
+    ncf_ctl(ncfw_t&& win) : win_(std::move(win)) {};
     virtual ~ncf_ctl() {};
     virtual int init() {
-        if (pwin_ != nullptr) {
-            pwin_->init();
-            pwin_->draw();
-        }
+        win_.init();
+        win_.draw();
         return 0;
     };
     virtual int on_key(int key) {
@@ -49,8 +54,8 @@ public:
         }
         return 0;
     };
-    int key_up() {
-        WINDOW* win = pwin_->get_win();
+    virtual int key_up() {
+        WINDOW* win = win_.get_win();
         int maxy, maxx;
         getmaxyx(win, maxy, maxx);
         int cury = getcury(win);
@@ -59,13 +64,13 @@ public:
             wmove(win, cury - 1, curx);
             wrefresh(win);
         } else {
-            pwin_->roll(-1);
-            pwin_->draw();
+            win_.roll(-1);
+            win_.draw();
         }
         return 0;
     };
-    int key_down() {
-        WINDOW* win = pwin_->get_win();
+    virtual int key_down() {
+        WINDOW* win = win_.get_win();
         int maxy, maxx;
         getmaxyx(win, maxy, maxx);
         int cury = getcury(win);
@@ -74,14 +79,14 @@ public:
             wmove(win, cury + 1, curx);
             wrefresh(win);
         } else {
-            pwin_->roll(1);
-            pwin_->draw();
+            win_.roll(1);
+            win_.draw();
         }
         return 0;
     };
 
 protected:
-    ncf_win<>* pwin_;
+    ncfw_t win_;
 };
 
 #endif

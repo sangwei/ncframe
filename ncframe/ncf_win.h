@@ -1,29 +1,32 @@
 #ifndef _NCF_WIN_H_
 #define _NCF_WIN_H_
 
-#include <utility>
 #include <ncurses.h>
 #include <vector>
-#include <string>
-#include <functional>
-#include <algorithm>
 
-template <typename data_t=std::string>
+template <typename buf_t=std::string>
 struct default_fmt {
-    const char* operator()(data_t data) {
-        return data.c_str();
+    const char* operator()(buf_t buf) {
+        return buf.c_str();
     };
 };
 
-template <typename data_t=std::string, typename fmt_t=default_fmt<data_t>>
-class ncf_win : public std::vector<data_t> {
+template <typename buf_t=std::string, typename fmt_t=default_fmt<buf_t>>
+class ncf_win {
 public:
+    std::vector<buf_t> buf;
+
     ncf_win() : pos_(0), win_(nullptr) {};
+    ncf_win(std::vector<buf_t>&& data) : ncf_win() {
+        buf = std::move(data);
+    };
     ncf_win(ncf_win&& rhs) {
+        buf = std::move(rhs.buf);
         pos_ = rhs.pos_;
         std::swap(win_, rhs.win_);
     };
     ncf_win& operator=(ncf_win&& rhs) {
+        buf = std::move(rhs.buf);
         pos_ = rhs.pos_;
         std::swap(win_, rhs.win_);
         return (*this);
@@ -42,7 +45,7 @@ public:
     };
     virtual int roll(int num) {
         pos_ = std::max(pos_ + num, 0);
-        int size = this->size() - 1;
+        int size = buf.size() - 1;
         pos_ = std::min(pos_, size);
         return 0;
     };
@@ -55,7 +58,7 @@ public:
         int curx = getcurx(win_);
         // clear window
         wclear(win_);
-        for (auto it = this->begin() + pos_, e = this->end(); it < e; it ++) {
+        for (auto it = buf.begin() + pos_, e = buf.end(); it < e; it ++) {
             if (getcury(win_) <= maxy - 1) {
                 waddstr(win_, fmt(*it));
             } else {
