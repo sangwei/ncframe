@@ -3,22 +3,7 @@
 
 #include "ncf_win.h"
 #include <map>
-
-class ncf_ctl_base;
-
-class ncf_ctl_mgr : public std::map<std::string, ncf_ctl_base*> {
-public:
-    ncf_ctl_mgr() : cur_ctl_(nullptr) {};
-    ~ncf_ctl_mgr() {};
-    void set_current(ncf_ctl_base* ctl) {
-        cur_ctl_ = ctl;
-    };
-    ncf_ctl_base* current() {
-        return cur_ctl_;
-    };
-private:
-    ncf_ctl_base* cur_ctl_;
-};
+#include <string>
 
 class ncf_ctl_base {
 public:
@@ -33,7 +18,9 @@ public:
 template <typename ncfw_t>
 class ncf_ctl : public ncf_ctl_base {
 public:
-    ncf_ctl() : win_(nullptr) {};
+    typedef ncfw_t win_type;
+
+    ncf_ctl() {};
     ncf_ctl(ncfw_t&& win) : win_(std::move(win)) {};
     virtual ~ncf_ctl() {};
     virtual int init() {

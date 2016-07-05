@@ -3,7 +3,7 @@
 #include <vector>
 
 int main(int argc, char** argv) {
-    ncf_ctl<ncf_win<std::string>> ctl(ncf_win<std::string>([]() {
+    return ncframe().start<ncf_ctl<ncf_win<std::string>>>("hello", []() {
             std::vector<std::string> vals;
             char row[255] = {0};
             for (int i = 0; i < 100; i ++) {
@@ -11,10 +11,5 @@ int main(int argc, char** argv) {
                 vals.push_back(row);
             }
             return vals;
-        }()
-    ));
-
-    ncframe ncf;
-    ncf.start(&ctl);
-    return 0;
+        }());
 }

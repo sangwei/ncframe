@@ -14,6 +14,8 @@ struct default_fmt {
 template <typename buf_t=std::string, typename fmt_t=default_fmt<buf_t>>
 class ncf_win {
 public:
+    typedef buf_t buf_type;
+    
     std::vector<buf_t> buf;
 
     ncf_win() : pos_(0), win_(nullptr) {};
