@@ -3,6 +3,12 @@
 
 #include "ncf_win.h"
 #include "ncf_ctl.h"
+#include <iostream>
+
+template <typename...Ts>
+void switch_controller(ncf_ctl_base*, const char* to_name, Ts...) {
+    std::cout << to_name << " default\n";
+};
 
 class ncframe {
 public:

@@ -23,7 +23,7 @@ struct get_internal<Index, Search, Search, Types...>
 template<class T, class... Types>
 T get(std::tuple<Types...> tuple)
 {
-	return std::get<get_internal<0,T,Types...>::type::index>(tuple);
+	return std::get<get_internal<0, T, Types...>::type::index>(tuple);
 }
 
 template <typename ncfw_t>
@@ -67,10 +67,21 @@ public:
     };
 };
 
+template <>
+void switch_controller(ncf_ctl_base*, const char* to_name,
+	const char* p1) {
+    std::cout << to_name << ": " << p1 << "\n";
+};
+
 int main(int argc, char** argv) {
     auto fr = new fram<std::string, int>("t1", 42);
     std::cout << get<std::string>(fr->objs) << std::endl;
     std::cout << fr->getv<int>() << std::endl;
+
+	//switch_controller(nullptr, "ctl2", { "param1", 42 });
+	switch_controller(nullptr, "ctl1", std::make_tuple("param1", 42));
+	switch_controller(nullptr, "ctl2", "param1");
+
     return 0;
     auto tpl = std::make_tuple(std::string("t1"), 3);
     //auto v1 = std::get<std::string>(tpl);
