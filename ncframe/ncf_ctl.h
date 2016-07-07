@@ -32,7 +32,7 @@ public:
         auto it = mwin_.begin();
         it->second->on_key(key);
     }
-private:
+protected:
     std::map<std::string, ncf_win*> mwin_;
 };
 
