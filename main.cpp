@@ -1,5 +1,4 @@
 #include "ncfw_lines.h"
-#include "ncfc_weix.h"
 #include "ncf_app.h"
 
 using namespace ncf;
