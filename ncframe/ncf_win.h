@@ -3,19 +3,14 @@
 
 #include <ncurses.h>
 #include <vector>
+#include <string>
 
 template <typename buf_t=std::string>
-struct default_fmt {
-    const char* operator()(buf_t buf) {
-        return buf.c_str();
-    };
-};
-
-template <typename buf_t=std::string, typename fmt_t=default_fmt<buf_t>>
 class ncf_win {
 public:
-    typedef buf_t buf_type;
-    
+    // buf_type;
+    using buf_type=buf_t;
+
     std::vector<buf_t> buf;
 
     ncf_win() : pos_(0), win_(nullptr) {};
@@ -51,6 +46,9 @@ public:
         pos_ = std::min(pos_, size);
         return 0;
     };
+    const char* format(std::string& buf) {
+        return buf.c_str();
+    };
     virtual int draw() {
         // get max row and col number
         int maxy, maxx;
@@ -62,7 +60,7 @@ public:
         wclear(win_);
         for (auto it = buf.begin() + pos_, e = buf.end(); it < e; it ++) {
             if (getcury(win_) <= maxy - 1) {
-                waddstr(win_, fmt(*it));
+                waddstr(win_, format(*it));
             } else {
                 break;
             }
@@ -78,7 +76,6 @@ public:
 
 protected:
     WINDOW* win_;
-    fmt_t fmt;
     int pos_;
 };
 

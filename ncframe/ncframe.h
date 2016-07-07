@@ -19,12 +19,14 @@ public:
         }
         ctls_.clear();
     };
-    template <typename ctl_t>
+    template <typename ctl_t, typename ctl_init_t>
     ctl_t* create_ctl(const std::string& name,
-        std::vector<typename ctl_t::win_type::buf_type>&& init_data) {
+        ctl_init_t&& ctl_data,
+        std::vector<typename ctl_t::win_type::buf_type>&& win_data) {
         if (ctls_.find(name) == ctls_.end()) {
             typedef typename ctl_t::win_type ncf_win_type;
-            auto ctl = new ctl_t(ncf_win_type(std::move(init_data)));
+            auto ctl = new ctl_t(ncf_win_type(std::move(win_data)),
+                std::move(ctl_data));
             // initialize new controller
             ctl->init();
             ctls_[name] = ctl;
@@ -33,11 +35,14 @@ public:
             return static_cast<ctl_t*>(ctls_[name]);
         }
     };
-    template <typename ctl_t>
+    template <typename ctl_t, typename ctl_init_t>
     int start(const std::string& name,
-        std::vector<typename ctl_t::win_type::buf_type>&& init_data) {
+        ctl_init_t&& ctl_data,
+        std::vector<typename ctl_t::win_type::buf_type>&& win_data) {
         // create the first controller
-        auto ctl = create_ctl<ctl_t>(name, std::move(init_data));
+        auto ctl = create_ctl<ctl_t, ctl_init_t>(name,
+            std::move(ctl_data),
+            std::move(win_data));
         // set current controller
         set_current(ctl);
         while (int c = getch()) {

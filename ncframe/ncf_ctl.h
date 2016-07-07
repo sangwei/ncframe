@@ -20,7 +20,6 @@ class ncf_ctl : public ncf_ctl_base {
 public:
     typedef ncfw_t win_type;
 
-    ncf_ctl() {};
     ncf_ctl(ncfw_t&& win) : win_(std::move(win)) {};
     virtual ~ncf_ctl() {};
     virtual int init() {
@@ -74,6 +73,9 @@ public:
 
 protected:
     ncfw_t win_;
+
+private:
+    ncf_ctl() {};
 };
 
 #endif
