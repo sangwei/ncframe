@@ -23,7 +23,7 @@ template <typename line_t=std::string, typename fmt_t=ncfw_line_fmt<line_t>>
 class ncfw_lines : public ncf_win {
 public:
     ncfw_lines(const ncfwi& wi) : 
-        ncf_win(wi), notify_(nullptr), pos_(-1), sel_(-1), sel_underline_(false) {}
+        ncf_win(wi), notify_(nullptr), pos_(0), sel_(0), sel_underline_(false) {}
 
     // notify callback type
     enum notify_t {
