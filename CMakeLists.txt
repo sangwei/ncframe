@@ -5,7 +5,7 @@ project (demo)
 set (CMAKE_CXX_STANDARD 11)
 
 # add the executable
-add_executable (demo main.cpp)
+add_executable (demo demo.cpp)
 
 # ncframe
 include_directories ("${CMAKE_CURRENT_SOURCE_DIR}/ncframe")

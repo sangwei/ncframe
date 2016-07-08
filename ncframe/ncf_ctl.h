@@ -9,11 +9,21 @@ namespace ncf {
 
 class ncf_ctl {
 public:
+    ncf_ctl() {};
+    virtual ~ncf_ctl() {
+        // release all sub windows
+        for (auto it : mwin_) {
+            delete it.second;
+        }
+    }
+    // create sub window of this controller
     template <typename win_t>
     win_t* create_win(const char* name, const char* title,
         int h, int w, int y, int x) {
         return create_win<win_t>(name, ncfwi(title, h, w, y, x));
     }
+    // create sub window of this controller
+    // using a struct as init parameter
     template <typename win_t>
     win_t* create_win(const char* name, const ncfwi& wi) {
         if (mwin_.find(name) != mwin_.end()) {

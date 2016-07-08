@@ -3,6 +3,7 @@
 
 #include "ncf_win.h"
 #include <vector>
+#include <functional>
 
 using namespace ncf;
 
@@ -21,11 +22,24 @@ struct ncfw_line_fmt<std::string> {
 template <typename line_t=std::string, typename fmt_t=ncfw_line_fmt<std::string>>
 class ncfw_lines : public ncf_win {
 public:
-    ncfw_lines(const ncfwi& wi) : ncf_win(wi) {}
+    ncfw_lines(const ncfwi& wi) : ncf_win(wi), notify_(nullptr) {}
+
+    // notify callback type
+    enum notify_t {
+        hit_row
+    };
+    using notify_fn_t=std::function<void(ncfw_lines<line_t, fmt_t>*, 
+        notify_t type, const char* param)>;
+    void set_notify(notify_fn_t&& fn) {
+        notify_ = std::move(fn);
+    }
 
     void set_lines(std::vector<line_t>&& lines) {
         lines_ = std::move(lines);
-    };
+    }
+    void append(const char* line) {
+        lines_.push_back(line);    
+    }
     virtual void draw() {
         // get max row and col number
         int maxy, maxx;
@@ -58,6 +72,11 @@ public:
         case 'j':
         case KEY_DOWN:
             row_down();
+            break;
+        case 10:
+            notify_(this, notify_t::hit_row, nullptr);
+            break;
+        default:
             break;
         }
     }
@@ -98,6 +117,7 @@ private:
     std::vector<line_t> lines_;
     int pos_;
     fmt_t fmt_;
+    notify_fn_t notify_;
 };
 
 #endif
