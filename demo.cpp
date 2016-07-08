@@ -21,11 +21,12 @@ int main() {
     win->set_notify(ctl->notify_fn());
     win->set_lines([](){
         std::vector<std::string> lines;
-        int size = 10;
+        int size = 100;
         lines.reserve(size);
-        char s[100] = {0};
+        char s[255] = {0};
         for (int i = 0; i < size; i ++) {
             sprintf(s, "%d\tPress q to exit.\n", i);
+//            sprintf(s, "%d\tLet's get into more details of attributes. The functions attron(), attroff(), attrset() , and their sister functions attr_get() etc.. can be used to switch attributes on/off , get attributes and produce a colorful display.\n", i);
             lines.push_back(s);
         }
         return lines;
