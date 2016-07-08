@@ -9,17 +9,17 @@ using namespace ncf;
 
 template <typename line_t=std::string>
 struct ncfw_line_fmt {
-    const char* operator()(line_t line);
+    const char* operator()(line_t& line);
 };
 
 template <>
 struct ncfw_line_fmt<std::string> {
-    const char* operator()(std::string line) {
+    const char* operator()(std::string& line) {
         return line.c_str();
     };
 };
 
-template <typename line_t=std::string, typename fmt_t=ncfw_line_fmt<std::string>>
+template <typename line_t=std::string, typename fmt_t=ncfw_line_fmt<line_t>>
 class ncfw_lines : public ncf_win {
 public:
     ncfw_lines(const ncfwi& wi) : ncf_win(wi), notify_(nullptr) {}
@@ -37,7 +37,7 @@ public:
     void set_lines(std::vector<line_t>&& lines) {
         lines_ = std::move(lines);
     }
-    void append(const char* line) {
+    void append(const line_t& line) {
         lines_.push_back(line);    
     }
     virtual void draw() {
