@@ -29,7 +29,7 @@ public:
         hit_row
     };
     using notify_fn_t=std::function<void(ncfw_lines<line_t, fmt_t>*, 
-        notify_t type, const char* param)>;
+        notify_t type, line_t& param)>;
     void set_notify(notify_fn_t&& fn) {
         notify_ = std::move(fn);
     }
@@ -74,7 +74,7 @@ public:
             row_down();
             break;
         case 10:
-            notify_(this, notify_t::hit_row, nullptr);
+            notify_(this, notify_t::hit_row, lines_[pos_]);
             break;
         default:
             break;

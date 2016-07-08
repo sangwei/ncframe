@@ -7,7 +7,7 @@ using demo_win=ncfw_lines<>;
 class demo_ctl : public ncf_ctl {
 public:
     demo_win::notify_fn_t notify_fn() {
-        return [this](demo_win* win, demo_win::notify_t type, const char* param) {
+        return [this](demo_win* win, demo_win::notify_t type, std::string& param) {
             win->append("enter ok, new line added\n"); 
             win->draw();
         };
