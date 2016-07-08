@@ -9,7 +9,7 @@ namespace ncf {
 
 class ncf_ctl {
 public:
-    ncf_ctl() {};
+    ncf_ctl() : cur_win_(nullptr) {};
     virtual ~ncf_ctl() {
         // release all sub windows
         for (auto it : mwin_) {
@@ -31,6 +31,8 @@ public:
         }
         win_t* win = new win_t(wi);
         mwin_[name] = win;
+        // last created window is current window
+        cur_win_ = win;
         return win;
     }
     void show() {
@@ -39,10 +41,12 @@ public:
         }
     }
     virtual void on_key(int key) {
-        auto it = mwin_.begin();
-        it->second->on_key(key);
+        if (cur_win_ != nullptr) {
+            cur_win_->on_key(key);
+        }
     }
 protected:
+    ncf_win* cur_win_;
     std::map<std::string, ncf_win*> mwin_;
 };
 
