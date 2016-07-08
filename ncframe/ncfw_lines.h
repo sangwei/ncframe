@@ -74,7 +74,9 @@ public:
             row_down();
             break;
         case 10:
-            notify_(this, notify_t::hit_row, lines_[pos_]);
+            if (notify_ != nullptr) {
+                notify_(this, notify_t::hit_row, lines_[pos_]);
+            }
             break;
         default:
             break;
