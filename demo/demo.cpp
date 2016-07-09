@@ -1,5 +1,4 @@
-#include "ncfw_lines.h"
-#include "ncf_app.h"
+#include "ncframe.h"
 
 using namespace ncf;
 using demo_win=ncfw_lines<>;

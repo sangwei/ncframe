@@ -1,4 +1,4 @@
-#include "ncframe/ncf_app.h"
+#include "ncframe.h"
 #include "gtest/gtest.h"
 
 namespace {

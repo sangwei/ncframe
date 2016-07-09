@@ -14,9 +14,11 @@ set (CMAKE_CXX_FLAGS "-g -Wall")
 # include_directories(${COMMON_INCLUDES}) in other CMakeLists.txt files.
 # set(COMMON_INCLUDES ${PROJECT_SOURCE_DIR}/include)
 set (NCF_INCLUDES ${PROJECT_SOURCE_DIR}/ncframe)
+set (NCF_DEMO_DIR ${PROJECT_SOURCE_DIR}/demo)
+set (NCF_UNIT_DIR ${PROJECT_SOURCE_DIR}/unittest)
 
-# add the executable
-add_executable (demo demo.cpp)
+# add the demo executable
+add_executable (demo ${NCF_DEMO_DIR}/demo.cpp)
 
 # ncframe
 include_directories ("${NCF_INCLUDES}")
@@ -42,7 +44,7 @@ if (test)
   ##############
   # Unit Tests
   ##############
-  add_executable(unittest unittest.cpp)
+  add_executable(unittest ${NCF_UNIT_DIR}/unittest.cpp)
 
   # Standard linking to gtest stuff.
   target_link_libraries(unittest gtest gtest_main)
