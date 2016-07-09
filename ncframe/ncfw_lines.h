@@ -119,8 +119,8 @@ public:
             roll(-1);
             sel_ = std::max(0, sel_ - 1);
         }
-        draw();
         wmove(win_, y_of_lines_[sel_ - pos_], curx);
+        draw();
         return 0;
     };
     virtual int row_down() {
