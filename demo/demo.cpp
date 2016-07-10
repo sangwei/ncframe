@@ -26,7 +26,6 @@ int main() {
         char s[255] = {0};
         for (int i = 0; i < size; i ++) {
             sprintf(s, "%d\tPress q to exit.\n", i);
-//            sprintf(s, "%d\tLet's get into more details of attributes. The functions attron(), attroff(), attrset() , and their sister functions attr_get() etc.. can be used to switch attributes on/off , get attributes and produce a colorful display.\n", i);
             lines.push_back(s);
         }
         return lines;
@@ -42,12 +41,8 @@ int main() {
         }
         return lines;
     }());
-    wresize(win_r->ncwin(), 40, 80);
+    wresize(win_r->ncwin(), LINES, 80);
     mvwin(win_r->ncwin(), 0, 80);
-    //endwin();
-    // Needs to be called after an endwin() so ncurses will initialize
-    // itself with the new terminal dimensions.
-    //refresh();
-    //clear();
+    win_r->set_sel_underline(true);
     app.run(ctl);
 }

@@ -51,6 +51,28 @@ public:
             pos_ = sel_ = 0;
         }
     }
+    virtual void draw_sel(int pre, int cur) {
+        // get max row and col number
+        int maxy, maxx;
+        getmaxyx(win_, maxy, maxx);
+        // backup cursor postion
+        int cury = getcury(win_);
+        int curx = getcurx(win_);
+        // draw previous selected position
+        wmove(win_, y_of_lines_[pre - pos_], 0);
+        waddstr(win_, fmt_(lines_[pre]));
+        // draw current selected position
+        wmove(win_, y_of_lines_[cur - pos_], 0);
+        wattron(win_, A_UNDERLINE);
+        waddstr(win_, fmt_(lines_[cur]));
+        wattroff(win_, A_UNDERLINE);
+        // clear last line
+        wmove(win_, maxy - 1, 0);
+        wclrtoeol(win_);
+        // move cursor back
+        wmove(win_, cury, curx);
+        wrefresh(win_);
+    }
     virtual void draw() {
         // get max row and col number
         int maxy, maxx;
@@ -103,42 +125,61 @@ public:
             break;
         }
     }
-    virtual void roll(int num) {
+    // return true, if it really scrolled
+    virtual bool roll(int num) {
+        int pre = pos_;
         pos_ = std::max(pos_ + num, 0);
         int size = lines_.size() - 1;
         pos_ = std::min(pos_, size);
+        if (pre != pos_) {
+            return true;
+        }
+        return false;
     }
     virtual int row_up() {
+        bool is_roll = false;
+        int pre_sel = sel_;
         int maxy, maxx;
-        getmaxyx(win_, maxy, maxx);
         int cury = getcury(win_);
         int curx = getcurx(win_);
+        getmaxyx(win_, maxy, maxx);
+        
         if (sel_ > pos_) {
             sel_ --;
         } else {
-            roll(-1);
+            is_roll = roll(-1);
             sel_ = std::max(0, sel_ - 1);
         }
         wmove(win_, y_of_lines_[sel_ - pos_], curx);
-        draw();
+        if (is_roll) {
+            draw();
+        } else {
+            draw_sel(pre_sel, sel_);
+        }
         return 0;
     };
     virtual int row_down() {
+        bool is_roll = false;
+        int pre_sel = sel_;
         int maxy, maxx;
-        getmaxyx(win_, maxy, maxx);
         int cury = getcury(win_);
         int curx = getcurx(win_);
+        getmaxyx(win_, maxy, maxx);
 
         if (sel_ >= 0 && sel_ + 1 < lines_.size() && 
             sel_ >= pos_ && (sel_ + 1 - pos_) < y_of_lines_.size() &&
             y_of_lines_[sel_ + 1 - pos_] < maxy - 1) {
             sel_ ++;    
         } else {
-            roll(1);
+            is_roll = roll(1);
             sel_ = std::min(sel_ + 1, (int)lines_.size() - 1);
         }
         wmove(win_, y_of_lines_[sel_ - pos_], curx);
-        draw();
+        if (is_roll) {
+            draw();
+        } else {
+            draw_sel(pre_sel, sel_);
+        }
         return 0;
     };
 private:
