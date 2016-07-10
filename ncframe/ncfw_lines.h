@@ -20,16 +20,16 @@ struct ncfw_line_fmt<std::string> {
 };
 
 template <typename line_t=std::string, typename fmt_t=ncfw_line_fmt<line_t>>
-class ncfw_lines : public ncf_win {
+class ncfw_lines_base : public ncf_win {
 public:
-    ncfw_lines(const ncfwi& wi) : 
+    ncfw_lines_base(const ncfwi& wi) : 
         ncf_win(wi), notify_(nullptr), pos_(0), sel_(0), sel_underline_(false) {}
 
     // notify callback type
     enum notify_t {
         hit_row
     };
-    using notify_fn_t=std::function<void(ncfw_lines<line_t, fmt_t>*, 
+    using notify_fn_t=std::function<void(ncfw_lines_base<line_t, fmt_t>*, 
         notify_t type, line_t& param)>;
     void set_notify(notify_fn_t&& fn) {
         notify_ = std::move(fn);
@@ -52,6 +52,9 @@ public:
         }
     }
     virtual void draw_sel(int pre, int cur) {
+        if (lines_.size() == 0) {
+            return;
+        }
         // get max row and col number
         int maxy, maxx;
         getmaxyx(win_, maxy, maxx);
@@ -74,6 +77,9 @@ public:
         wrefresh(win_);
     }
     virtual void draw() {
+        if (lines_.size() == 0) {
+            return;
+        }
         // get max row and col number
         int maxy, maxx;
         getmaxyx(win_, maxy, maxx);
@@ -137,6 +143,9 @@ public:
         return false;
     }
     virtual int row_up() {
+        if (lines_.size() == 0) {
+            return 0;
+        }
         bool is_roll = false;
         int pre_sel = sel_;
         int maxy, maxx;
@@ -159,6 +168,9 @@ public:
         return 0;
     };
     virtual int row_down() {
+        if (lines_.size() == 0) {
+            return 0;
+        }
         bool is_roll = false;
         int pre_sel = sel_;
         int maxy, maxx;
@@ -194,5 +206,7 @@ private:
     fmt_t fmt_;
     notify_fn_t notify_;
 };
+
+using ncfw_lines=ncfw_lines_base<>;
 
 #endif

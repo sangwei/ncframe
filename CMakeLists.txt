@@ -18,6 +18,7 @@ set (NCF_DEMO_DIR ${PROJECT_SOURCE_DIR}/demo)
 set (NCF_UNIT_DIR ${PROJECT_SOURCE_DIR}/unittest)
 
 # add the demo executable
+add_executable (demo0 ${NCF_DEMO_DIR}/demo0.cpp)
 add_executable (demo ${NCF_DEMO_DIR}/demo.cpp)
 
 # ncframe
@@ -53,6 +54,7 @@ if ((${CURSES_INCLUDE_DIR} EQUAL "na") OR (${CURSES_LIBRARIES} EQUAL "na"))
     find_package (Curses REQUIRED)
 endif()
 include_directories (${CURSES_INCLUDE_DIR})
+target_link_libraries (demo0 ${CURSES_LIBRARIES})
 target_link_libraries (demo ${CURSES_LIBRARIES})
 
 ################################

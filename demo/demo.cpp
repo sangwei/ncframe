@@ -1,7 +1,7 @@
 #include "ncframe.h"
 
 using namespace ncf;
-using demo_win=ncfw_lines<>;
+using demo_win=ncfw_lines;
 
 class demo_ctl : public ncf_ctl {
 public:
