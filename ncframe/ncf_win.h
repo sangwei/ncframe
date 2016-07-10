@@ -29,6 +29,7 @@ public:
     ncf_win(ncf_win&& rhs) = delete;
     ncf_win& operator=(const ncf_win& rhs) = delete;
     ncf_win& operator=(ncf_win&& rhs) = delete;
+    WINDOW* ncwin() { return win_; }
     virtual ~ncf_win() { delwin(win_); }
     virtual void draw() { 
         wclear(win_);
@@ -45,4 +46,3 @@ protected:
 }
 
 #endif
-
