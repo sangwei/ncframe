@@ -5,7 +5,7 @@
 #include <functional>
 #include <vector>
 
-using namespace ncf;
+namespace ncf {
 
 template <typename line_t = std::string> struct ncfw_line_fmt {
     const char *operator()(line_t &line);
@@ -22,9 +22,7 @@ template <typename line_t = std::string, typename fmt_t = ncfw_line_fmt<line_t>>
 class ncfw_lines_base : public ncf_win {
 public:
     ncfw_lines_base(const ncfwi &wi)
-        : ncf_win(wi), notify_(nullptr), pos_(0), sel_(0), sel_underline_(false)
-    {
-    }
+        : ncf_win(wi), notify_(nullptr), pos_(0), sel_(0), sel_underline_(false) {}
 
     // notify callback type
     enum notify_t { hit_row };
@@ -39,7 +37,9 @@ public:
     {
         sel_underline_ = v;
     }
-
+    const std::vector<line_t>& get_lines() {
+        return lines_;
+    }
     void set_lines(std::vector<line_t> &&lines)
     {
         lines_ = std::move(lines);
@@ -225,5 +225,7 @@ private:
 };
 
 using ncfw_lines = ncfw_lines_base<>;
+
+}
 
 #endif
