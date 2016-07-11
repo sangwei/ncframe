@@ -5,7 +5,7 @@ namespace {
 
 // The fixture for testing class Foo.
 class FooTest : public ::testing::Test {
- protected:
+protected:
   // You can remove any or all of the following functions if its body
   // is empty.
 
@@ -35,10 +35,10 @@ class FooTest : public ::testing::Test {
 
 // Tests that the Foo::Bar() method does Abc.
 TEST_F(FooTest, MethodBarDoesAbc) {
-/*  const string input_filepath = "this/package/testdata/myinputfile.dat";
-  const string output_filepath = "this/package/testdata/myoutputfile.dat";
-  Foo f;
-  EXPECT_EQ(0, f.Bar(input_filepath, output_filepath));*/
+  /*  const string input_filepath = "this/package/testdata/myinputfile.dat";
+    const string output_filepath = "this/package/testdata/myoutputfile.dat";
+    Foo f;
+    EXPECT_EQ(0, f.Bar(input_filepath, output_filepath));*/
   ncf::ncf_app app;
   EXPECT_EQ(0, 0);
 }
@@ -48,7 +48,7 @@ TEST_F(FooTest, DoesXyz) {
   // Exercises the Xyz feature of Foo.
 }
 
-}  // namespace
+} // namespace
 
 int main(int argc, char **argv) {
   ::testing::InitGoogleTest(&argc, argv);
