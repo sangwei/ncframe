@@ -42,6 +42,12 @@ public:
       pos_ = sel_ = 0;
     }
   }
+  void append(const std::vector<line_t> &lines) {
+    lines_.insert(lines_.end(), lines.begin(), lines.end());
+    if (lines_.size() > 0) {
+      pos_ = sel_ = 0;
+    }
+  }
   virtual void draw_sel(int pre, int cur) {
     if (lines_.size() == 0) {
       return;
