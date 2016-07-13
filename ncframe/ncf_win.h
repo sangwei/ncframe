@@ -38,12 +38,7 @@ public:
     {
         delwin(win_);
     }
-    virtual void draw()
-    {
-        wclear(win_);
-        waddstr(win_, title_.c_str());
-        wrefresh(win_);
-    }
+    virtual void draw() {}
     virtual void on_key(int key) {}
 
 protected:

@@ -21,6 +21,8 @@ template <> struct ncfw_line_fmt<std::string> {
 template <typename line_t = std::string, typename fmt_t = ncfw_line_fmt<line_t>>
 class ncfw_lines_base : public ncf_win {
 public:
+    using iterator=typename std::vector<line_t>::iterator;
+
     ncfw_lines_base(const ncfwi &wi)
         : ncf_win(wi), notify_(nullptr), pos_(0), sel_(0), sel_underline_(false) {}
 
@@ -36,9 +38,6 @@ public:
     void set_sel_underline(bool v)
     {
         sel_underline_ = v;
-    }
-    const std::vector<line_t>& get_lines() {
-        return lines_;
     }
     void set_lines(std::vector<line_t> &&lines)
     {
@@ -57,13 +56,26 @@ public:
     void append(const std::vector<line_t> &lines)
     {
         lines_.insert(lines_.end(), lines.begin(), lines.end());
-        if (lines_.size() > 0) {
+        if (lines_.size() == 1) {
             pos_ = sel_ = 0;
+        }
+    }
+    iterator erase(const iterator pos)
+    {
+        iterator it = lines_.erase(pos);
+        if (it == lines_.end()) {
+
+        }
+        if (pos_ >= lines_.size()) {
+            pos_ = lines_.size() - 1;
+        }
+        if (sel_ >= lines_.size()) {
+            sel_ = lines_.size() - 1;
         }
     }
     virtual void draw_sel(int pre, int cur)
     {
-        if (lines_.size() == 0) {
+        if (lines_.size() == 0 || !sel_underline_) {
             return;
         }
         // get max row and col number
@@ -158,56 +170,53 @@ public:
     }
     virtual int row_up()
     {
-        if (lines_.size() == 0) {
-            return 0;
+        if (sel_ <= 0) {
+            return 0;   // no row above here
         }
-        bool is_roll = false;
-        int pre_sel = sel_;
-        int maxy, maxx;
-        int cury = getcury(win_);
-        int curx = getcurx(win_);
-        getmaxyx(win_, maxy, maxx);
-
         if (sel_ > pos_) {
-            sel_--;
+            // only move up selection
+            sel_ --;
+            draw_sel(sel_ + 1, sel_);
         } else {
-            is_roll = roll(-1);
-            sel_ = std::max(0, sel_ - 1);
-        }
-        wmove(win_, y_of_lines_[sel_ - pos_], curx);
-        if (is_roll) {
+            // top most line is selected
+            // scroll up
+            sel_ --;
+            pos_ --;
             draw();
-        } else {
-            draw_sel(pre_sel, sel_);
         }
+        wmove(win_, y_of_lines_[sel_ - pos_], 0);
+        wrefresh(win_);
         return 0;
     };
+
     virtual int row_down()
     {
-        if (lines_.size() == 0) {
-            return 0;
+        if (sel_ >= lines_.size() - 1) {
+            return 0;   // no row below current selection
+                        // just do nothing
         }
-        bool is_roll = false;
-        int pre_sel = sel_;
-        int maxy, maxx;
-        int cury = getcury(win_);
-        int curx = getcurx(win_);
-        getmaxyx(win_, maxy, maxx);
-
-        if (sel_ >= 0 && sel_ + 1 < lines_.size() && sel_ >= pos_ &&
-                (sel_ + 1 - pos_) < y_of_lines_.size() &&
-                y_of_lines_[sel_ + 1 - pos_] < maxy - 1) {
-            sel_++;
+        if (sel_ + 1 - pos_ < y_of_lines_.size()) {
+            // next selection still on current screen
+            // only selection should be drawn again
+            sel_ ++;
+            draw_sel(sel_ - 1, sel_);
         } else {
-            is_roll = roll(1);
-            sel_ = std::min(sel_ + 1, (int)lines_.size() - 1);
-        }
-        wmove(win_, y_of_lines_[sel_ - pos_], curx);
-        if (is_roll) {
+            // move to next screen position
+            pos_ ++;
+            sel_ ++;
             draw();
-        } else {
-            draw_sel(pre_sel, sel_);
+            // size of y_of_lines, is the total number of lines
+            // shown on current window
+            // so the posible biggest sel_ is:
+            //     pos_ + y_of_lines_.size() - 1
+            if (sel_ > pos_ + y_of_lines_.size() - 1) {
+                // redraw selection
+                draw_sel(sel_, pos_ + y_of_lines_.size() - 1);
+                sel_ = pos_ + y_of_lines_.size() - 1;
+            }
         }
+        wmove(win_, y_of_lines_[sel_ - pos_], 0);
+        wrefresh(win_);
         return 0;
     };
 
