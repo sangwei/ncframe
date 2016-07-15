@@ -61,21 +61,25 @@ public:
             pos_ = sel_ = 0;
         }
     }
+    size_t size() {
+        return lines_.size();
+    }
+    const_iterator at(size_t pos) {
+        return lines_[pos];
+    }
     const_iterator end() {
         return lines_.end();
     }
     iterator erase(const_iterator pos)
     {
         iterator it = lines_.erase(pos);
-        if (it == lines_.end()) {
-
-        }
         if (pos_ >= lines_.size()) {
             pos_ = lines_.size() - 1;
         }
         if (sel_ >= lines_.size()) {
             sel_ = lines_.size() - 1;
         }
+        return it;
     }
     virtual void draw_sel(int pre, int cur)
     {
