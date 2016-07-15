@@ -119,6 +119,11 @@ public:
                 } else {
                     waddstr(win_, fmt_(lines_[i]));
                 }
+                if ( i != e - 1) {  // no next line at the end of lines
+                    waddstr(win_, "\n");    
+                    // no need to add a '\n' at the
+                    // end of line_t
+                }
             } else {
                 break;
             }
@@ -181,8 +186,6 @@ public:
             pos_ --;
             draw();
         }
-        //wmove(win_, y_of_lines_[sel_ - pos_], 0);
-        //wrefresh(win_);
         return 0;
     };
 
@@ -190,7 +193,7 @@ public:
     {
         if (sel_ >= lines_.size() - 1) {
             return 0;   // no row below current selection
-                        // just do nothing
+            // just do nothing
         }
         if (sel_ + 1 - pos_ < y_of_lines_.size()) {
             // next selection still on current screen
@@ -212,35 +215,29 @@ public:
                 sel_ = pos_ + y_of_lines_.size() - 1;
             }
         }
-        //wmove(win_, y_of_lines_[sel_ - pos_], 0);
-        //wrefresh(win_);
         return 0;
     };
 
-    size_t calc_height(const std::string& input, size_t width, size_t pos = 0) {
-        size_t row = 0;
-        for (auto it = input.begin(); it != input.end(); ++pos, ++it) {
-            if (pos >= width) {
-                pos = 0;
-                ++row;
-            }
-            if (*it == '\n') {
-                pos = 0;
-                ++row;
-            }
-        }
-        return row;
+    size_t calc_height(const char* input, size_t width, size_t pos = 0)
+    {
+        wmove(win_, 0, 0);
+        waddstr(win_, input);
+        return getcury(win_) + 1;
     }
 
-    void row_to_bottom() {
+    void row_to_bottom()
+    {
         int maxy, maxx;
         getmaxyx(win_, maxy, maxx);
         // calculate height for every line from the bottom
-        int total_height = 1;
+        int total_height = 0;
         int pos = lines_.size();
         while (--pos >= 0) {
-            total_height += calc_height(lines_[pos], maxx);
+            total_height += calc_height(fmt_(lines_[pos]), maxx);
             if (total_height > maxy - 1) {
+                ++pos;
+                break;
+            } else if (total_height == maxy - 1) {
                 break;
             }
         }

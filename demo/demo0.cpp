@@ -6,6 +6,7 @@ using namespace ncf;
 
 int main(int argc, char** argv)
 {
+    setlocale(LC_ALL, "zh_CN.UTF-8");
     ncf_app app;
     auto ctl = app.create_ctl<ncf_ctl>("ctl");
     ncfwi wi;
@@ -18,11 +19,11 @@ int main(int argc, char** argv)
         int it = 0;
         int lb = 0;
         while (it != str.size()) {
-            it ++;
-            if (str[it - 1] == '\n') {
+            if (str[it] == '\n') {
                 lines.push_back(str.substr(lb, it - lb));
-                lb = it;
+                lb = it + 1;
             }
+            it ++;
         }
         if (lb != str.size()) {
             lines.push_back(str.substr(lb));
