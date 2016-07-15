@@ -22,6 +22,7 @@ template <typename line_t = std::string, typename fmt_t = ncfw_line_fmt<line_t>>
 class ncfw_lines_base : public ncf_win {
 public:
     using iterator=typename std::vector<line_t>::iterator;
+    using const_iterator=const typename std::vector<line_t>::iterator;
 
     ncfw_lines_base(const ncfwi &wi)
         : ncf_win(wi), pos_(0), sel_(0), sel_underline_(false), notify_(nullptr) {}
@@ -60,7 +61,10 @@ public:
             pos_ = sel_ = 0;
         }
     }
-    iterator erase(const iterator pos)
+    const_iterator end() {
+        return lines_.end();
+    }
+    iterator erase(const_iterator pos)
     {
         iterator it = lines_.erase(pos);
         if (it == lines_.end()) {
