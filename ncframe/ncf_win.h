@@ -14,7 +14,7 @@ struct ncfwi {
     std::string title = "win";
     ncfwi() {}
     ncfwi(const char *title, int h, int w, int y, int x)
-        : title(title), h(h), w(w), y(y), x(x) {}
+        : h(h), w(w), y(y), x(x), title(title) {}
 };
 
 class ncf_win {

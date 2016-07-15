@@ -24,7 +24,7 @@ public:
     using iterator=typename std::vector<line_t>::iterator;
 
     ncfw_lines_base(const ncfwi &wi)
-        : ncf_win(wi), notify_(nullptr), pos_(0), sel_(0), sel_underline_(false) {}
+        : ncf_win(wi), pos_(0), sel_(0), sel_underline_(false), notify_(nullptr) {}
 
     // notify callback type
     enum notify_t { hit_row };
@@ -81,9 +81,6 @@ public:
         // get max row and col number
         int maxy, maxx;
         getmaxyx(win_, maxy, maxx);
-        // backup cursor postion
-        int cury = getcury(win_);
-        int curx = getcurx(win_);
         // draw previous selected position
         wmove(win_, y_of_lines_[pre - pos_], 0);
         waddstr(win_, fmt_(lines_[pre]));
@@ -95,8 +92,8 @@ public:
         // clear last line
         wmove(win_, maxy - 1, 0);
         wclrtoeol(win_);
-        // move cursor back
-        wmove(win_, cury, curx);
+        // move cursor to selected pos
+        wmove(win_, y_of_lines_[sel_ - pos_], 0);
         wrefresh(win_);
     }
     virtual void draw()
@@ -107,9 +104,6 @@ public:
         // get max row and col number
         int maxy, maxx;
         getmaxyx(win_, maxy, maxx);
-        // backup cursor postion
-        int cury = getcury(win_);
-        int curx = getcurx(win_);
         // clear window
         wclear(win_);
         // clear y record
@@ -132,8 +126,8 @@ public:
         // clear last line
         wmove(win_, maxy - 1, 0);
         wclrtoeol(win_);
-        // move cursor back
-        wmove(win_, cury, curx);
+        // move cursor to selected pos
+        wmove(win_, y_of_lines_[sel_ - pos_], 0);
         wrefresh(win_);
     }
     virtual void on_key(int key)
@@ -146,6 +140,9 @@ public:
         case 'j':
         case KEY_DOWN:
             row_down();
+            break;
+        case 'G':
+            row_to_bottom();
             break;
         case 10:
             if (notify_ != nullptr && sel_ < lines_.size()) {
@@ -184,8 +181,8 @@ public:
             pos_ --;
             draw();
         }
-        wmove(win_, y_of_lines_[sel_ - pos_], 0);
-        wrefresh(win_);
+        //wmove(win_, y_of_lines_[sel_ - pos_], 0);
+        //wrefresh(win_);
         return 0;
     };
 
@@ -215,10 +212,42 @@ public:
                 sel_ = pos_ + y_of_lines_.size() - 1;
             }
         }
-        wmove(win_, y_of_lines_[sel_ - pos_], 0);
-        wrefresh(win_);
+        //wmove(win_, y_of_lines_[sel_ - pos_], 0);
+        //wrefresh(win_);
         return 0;
     };
+
+    size_t calc_height(const std::string& input, size_t width, size_t pos = 0) {
+        size_t row = 0;
+        for (auto it = input.begin(); it != input.end(); ++pos, ++it) {
+            if (pos >= width) {
+                pos = 0;
+                ++row;
+            }
+            if (*it == '\n') {
+                pos = 0;
+                ++row;
+            }
+        }
+        return row;
+    }
+
+    void row_to_bottom() {
+        int maxy, maxx;
+        getmaxyx(win_, maxy, maxx);
+        // calculate height for every line from the bottom
+        int total_height = 1;
+        int pos = lines_.size();
+        while (--pos >= 0) {
+            total_height += calc_height(lines_[pos], maxx);
+            if (total_height > maxy - 1) {
+                break;
+            }
+        }
+        pos_ = pos;
+        sel_ = lines_.size() - 1;
+        draw();
+    }
 
 private:
     std::vector<int> y_of_lines_;
