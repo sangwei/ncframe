@@ -90,7 +90,9 @@ public:
         wmove(win_, maxy - 1, 0);
         wclrtoeol(win_);
         // move cursor to selected pos
-        wmove(win_, y_of_lines_[sel_ - pos_], 0);
+        if (lines_.size() > 0) {
+            wmove(win_, y_of_lines_[sel_ - pos_], 0);
+        }
         wrefresh(win_);
     }
     // draw selection item
@@ -127,6 +129,16 @@ public:
         if (sel_ >= lines_.size()) {
             sel_ = lines_.size() - 1;
         }
+    }
+    // insert lines to the position
+    void insert(const std::vector<line_t>& lines, int pos)
+    {
+        std::vector<line_t> nls;
+        nls.reserve(lines.size() + lines_.size());
+        nls.insert(nls.end(), lines_.begin(), lines_.begin() + pos);
+        nls.insert(nls.end(), lines.begin(), lines.end());
+        nls.insert(nls.end(), lines_.begin() + pos, lines_.end());
+        lines_ = std::move(nls);
     }
     // return true, if it really scrolled
     virtual bool roll(int num)
@@ -190,6 +202,15 @@ public:
         sel_ = lines_.size() - 1;
         draw();
     }
+    // move to the top row
+    void row_to_top()
+    {
+        if (lines_.size() == 0) {
+            return;
+        }
+        pos_ = sel_ = 0;
+        draw();
+    }
     // move to top one row
     virtual int row_up()
     {
@@ -221,6 +242,9 @@ public:
         case KEY_DOWN:
             row_down();
             break;
+        case 'g':
+            row_to_top();
+            break;
         case 'G':
             row_to_bottom();
             break;
@@ -239,7 +263,7 @@ public:
         lines_ = std::move(lines);
         pos_ = sel_ = 0;    // moving to the top line
     }
-    // set notify callback function 
+    // set notify callback function
     void set_notify(notify_fn_t &&fn)
     {
         notify_ = std::move(fn);
