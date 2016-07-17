@@ -64,7 +64,7 @@ public:
     size_t size() {
         return lines_.size();
     }
-    const_iterator at(size_t pos) {
+    const line_t& at(size_t pos) {
         return lines_[pos];
     }
     const_iterator end() {
