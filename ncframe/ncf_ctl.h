@@ -19,8 +19,7 @@ public:
     }
     // create sub window of this controller
     template <typename win_t>
-    win_t *create_win(const char *name, const char *title, int h, int w, int y,
-                      int x)
+    win_t *create_win(const char *name, const char *title, int h = 0, int w = 0, int y = 0, int x = 0)
     {
         return create_win<win_t>(name, ncfwi(title, h, w, y, x));
     }
