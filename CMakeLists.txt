@@ -16,6 +16,7 @@ set (CMAKE_CXX_FLAGS "-g -Wall")
 set (NCF_INCLUDES ${PROJECT_SOURCE_DIR}/ncframe)
 set (NCF_DEMO_DIR ${PROJECT_SOURCE_DIR}/demo)
 set (NCF_UNIT_DIR ${PROJECT_SOURCE_DIR}/unittest)
+set (NCF_BIN_DIR ${PROJECT_SOURCE_DIR}/bin)
 
 # add the demo executable
 add_executable (demo0 ${NCF_DEMO_DIR}/demo0.cpp)
@@ -56,6 +57,9 @@ endif()
 include_directories (${CURSES_INCLUDE_DIR})
 target_link_libraries (demo0 ${CURSES_LIBRARIES})
 target_link_libraries (demo ${CURSES_LIBRARIES})
+
+set_target_properties(demo0 PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${NCF_BIN_DIR})
+set_target_properties(demo PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${NCF_BIN_DIR})
 
 ################################
 # Testing
