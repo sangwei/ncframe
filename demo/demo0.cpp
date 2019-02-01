@@ -16,8 +16,8 @@ int main(int argc, char** argv)
         std::ifstream ifs(argv[1]);
         std::string str((std::istreambuf_iterator<char>(ifs)),
                                  std::istreambuf_iterator<char>());
-        int it = 0;
-        int lb = 0;
+        uint it = 0;
+        uint lb = 0;
         while (it != str.size()) {
             if (str[it] == '\n') {
                 lines.push_back(str.substr(lb, it - lb));
